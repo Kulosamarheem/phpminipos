@@ -73,14 +73,16 @@ Project PHP/
 │   ├── Flow.txt               # flow POS ที่เสนอไว้
 │   ├── Database.txt           # flow transaction ที่เสนอไว้
 │   └── screenshots/           # ภาพหน้าจอที่ใช้ใน README
-├── index.php                  # หน้าแรกหลังเข้าสู่ระบบ
-├── login.php                  # หน้าจอและ handler การเข้าสู่ระบบ (CSRF + throttle)
-├── logout.php                 # handler ออกจากระบบ
-├── pos.php                    # หน้าขายสินค้าและตะกร้า
-├── receipt.php                # ใบเสร็จ 80mm ของบิลที่ระบุ
-├── report_sales.php           # รายงานสรุปยอดขาย — admin เท่านั้น
-├── order_history.php          # ประวัติบิล + รายละเอียดรายการ — admin เท่านั้น
-├── products.php               # หน้าเพิ่ม/แก้ไข/ปิดการขายสินค้า
+├── pages/                     # หน้าเว็บที่ผู้ใช้เปิด (HTML)
+│   ├── index.php              # หน้าแรกหลังเข้าสู่ระบบ
+│   ├── login.php              # หน้าจอและ handler การเข้าสู่ระบบ (CSRF + throttle)
+│   ├── logout.php             # handler ออกจากระบบ
+│   ├── pos.php                # หน้าขายสินค้าและตะกร้า
+│   ├── receipt.php            # ใบเสร็จ 80mm ของบิลที่ระบุ
+│   ├── report_sales.php       # รายงานสรุปยอดขาย — admin เท่านั้น
+│   ├── order_history.php      # ประวัติบิล + รายละเอียดรายการ — admin เท่านั้น
+│   └── products.php           # หน้าเพิ่ม/แก้ไข/ปิดการขายสินค้า
+├── index.php                  # redirect โดเมนเปล่า (/) ไป pages/index.php
 ├── start.bat                  # ตัวช่วยเปิด MySQL + PHP dev server
 ├── build_deploy.ps1           # เตรียมไฟล์อัปขึ้น shared hosting (เช่น InfinityFree)
 ├── README.md
@@ -94,7 +96,8 @@ Project PHP/
 | `includes/` | reusable cross-cutting logic โดยเฉพาะ session/authentication |
 | `sql/` | โครงสร้างฐานข้อมูลสำหรับ setup MySQL/MariaDB |
 | `tests/` | สคริปต์ CLI ทดสอบแบบรันมือ (VAT, concurrency, e2e user fixtures) + `tests/e2e/` ชุด Playwright แยก dependency |
-| root `*.php` | หน้าเว็บ (route) ที่ผู้ใช้เปิดตรง — ไม่มี router กลาง URL ผูกกับพาธไฟล์โดยตรง ห้ามย้ายโดยไม่แก้ลิงก์ทุกจุด |
+| `pages/` | หน้าเว็บ (route) ที่ผู้ใช้เปิดตรง — ไม่มี router กลาง URL ผูกกับพาธไฟล์โดยตรง ลิงก์ระหว่างหน้าเป็น relative ส่วน redirect ใช้ `BASE_URL . 'pages/...'` |
+| root `index.php` | redirect `/` ไป `pages/index.php` เท่านั้น |
 | `api/` | JSON endpoint ที่ JavaScript เรียก — ย้าย/เปลี่ยนชื่อต้องแก้ `request('api/...')` ใน `assets/js/` ด้วย |
 | `docs/` | เอกสารออกแบบ (`SYSTEM_DESIGN.md`, `Flow.txt`, `Database.txt`) และภาพหน้าจอ ไม่ใช่ executable code |
 | `graphify-out/` | knowledge graph ที่สร้างขึ้น (generated) — cache ภายในและพาธ interpreter เฉพาะเครื่องถูก gitignore ไว้ |
@@ -103,14 +106,14 @@ Project PHP/
 
 | Route | หน้า UI | การเข้าถึง | องค์ประกอบหลัก |
 |---|---|---|---|
-| `GET /login.php` | หน้าเข้าสู่ระบบ | public; ถ้าล็อกอินแล้วจะ redirect | ฟอร์ม username/password, ปุ่มเข้าสู่ระบบ, พื้นที่แสดง error |
-| `GET /index.php` | หน้าหลัก | ต้องมี session ผู้ใช้ | top bar แสดงชื่อ/role, ลิงก์ออกจากระบบ และลิงก์ไป POS |
-| `GET /pos.php` | หน้าขายสินค้า | ต้องมี session ผู้ใช้ | ช่อง barcode, ข้อความสถานะ, ตารางตะกร้า, ปุ่มเพิ่ม/ลด/ลบ และ panel บิลที่พักไว้ (ช่องหมายเหตุ + ปุ่มพักบิล/เรียกคืน/ลบ) |
-| `GET /products.php` | จัดการสินค้า | ผู้ใช้ที่ล็อกอินทุก role | ฟอร์มเพิ่มสินค้า, ตารางสินค้า active แก้ไขในแถวได้ (barcode/ชื่อ/ราคา/สต็อก) พร้อมปุ่มบันทึก/ยกเลิก/ลบ |
-| `GET /receipt.php?order_id=` | ใบเสร็จ 80mm | เจ้าของบิลหรือ admin | หัวร้าน, รายการสินค้า, ยอดรวม, ปุ่มพิมพ์; หน้าขายฝังหน้านี้เป็น iframe ซ่อนแล้วสั่งพิมพ์เอง ส่วน `autoprint=1` ใช้กับลิงก์ที่เปิดตรง (พิมพ์ซ้ำ) |
-| `GET /report_sales.php` | รายงานยอดขาย | `admin` เท่านั้น | ตัวกรองช่วงวันที่/พนักงาน และการ์ดสรุปยอด |
-| `GET /order_history.php` | ประวัติบิล | `admin` เท่านั้น | ตัวกรอง + ค้นเลขที่บิล, ตารางบิลแบ่งหน้า, panel รายละเอียดรายการสินค้า |
-| `GET /logout.php` | ไม่มีหน้า render | ผู้ใช้ใน session | ล้าง session, ลบ cookie และ redirect กลับ login |
+| `GET /pages/login.php` | หน้าเข้าสู่ระบบ | public; ถ้าล็อกอินแล้วจะ redirect | ฟอร์ม username/password, ปุ่มเข้าสู่ระบบ, พื้นที่แสดง error |
+| `GET /pages/index.php` | หน้าหลัก | ต้องมี session ผู้ใช้ | top bar แสดงชื่อ/role, ลิงก์ออกจากระบบ และลิงก์ไป POS |
+| `GET /pages/pos.php` | หน้าขายสินค้า | ต้องมี session ผู้ใช้ | ช่อง barcode, ข้อความสถานะ, ตารางตะกร้า, ปุ่มเพิ่ม/ลด/ลบ และ panel บิลที่พักไว้ (ช่องหมายเหตุ + ปุ่มพักบิล/เรียกคืน/ลบ) |
+| `GET /pages/products.php` | จัดการสินค้า | ผู้ใช้ที่ล็อกอินทุก role | ฟอร์มเพิ่มสินค้า, ตารางสินค้า active แก้ไขในแถวได้ (barcode/ชื่อ/ราคา/สต็อก) พร้อมปุ่มบันทึก/ยกเลิก/ลบ |
+| `GET /pages/receipt.php?order_id=` | ใบเสร็จ 80mm | เจ้าของบิลหรือ admin | หัวร้าน, รายการสินค้า, ยอดรวม, ปุ่มพิมพ์; หน้าขายฝังหน้านี้เป็น iframe ซ่อนแล้วสั่งพิมพ์เอง ส่วน `autoprint=1` ใช้กับลิงก์ที่เปิดตรง (พิมพ์ซ้ำ) |
+| `GET /pages/report_sales.php` | รายงานยอดขาย | `admin` เท่านั้น | ตัวกรองช่วงวันที่/พนักงาน และการ์ดสรุปยอด |
+| `GET /pages/order_history.php` | ประวัติบิล | `admin` เท่านั้น | ตัวกรอง + ค้นเลขที่บิล, ตารางบิลแบ่งหน้า, panel รายละเอียดรายการสินค้า |
+| `GET /pages/logout.php` | ไม่มีหน้า render | ผู้ใช้ใน session | ล้าง session, ลบ cookie และ redirect กลับ login |
 
 UI ทั้งหมดอ้างอิง `assets/css/style.css`:
 
@@ -132,10 +135,10 @@ UI ทั้งหมดอ้างอิง `assets/css/style.css`:
 
 | Endpoint | Method | Request | Backend action | Response |
 |---|---|---|---|---|
-| `/login.php` | GET | session cookie | ตรวจว่าล็อกอินแล้วหรือไม่ | HTML login หรือ `302 /index.php` |
-| `/login.php` | POST | `username`, `password`, CSRF token | ตรวจ throttle, CSRF, prepared `SELECT` ผู้ใช้ active, `password_verify`, regenerate session | `302 /index.php` หรือ HTML พร้อม error |
-| `/index.php` | GET | session cookie | `require_login()` และอ่าน `current_user()` | HTML หรือ `302 /login.php` |
-| `/logout.php` | GET | session cookie | ล้าง `$_SESSION`, `session_destroy()` | `302 /login.php` |
+| `/pages/login.php` | GET | session cookie | ตรวจว่าล็อกอินแล้วหรือไม่ | HTML login หรือ `302 /pages/index.php` |
+| `/pages/login.php` | POST | `username`, `password`, CSRF token | ตรวจ throttle, CSRF, prepared `SELECT` ผู้ใช้ active, `password_verify`, regenerate session | `302 /pages/index.php` หรือ HTML พร้อม error |
+| `/pages/index.php` | GET | session cookie | `require_login()` และอ่าน `current_user()` | HTML หรือ `302 /pages/login.php` |
+| `/pages/logout.php` | GET | session cookie | ล้าง `$_SESSION`, `session_destroy()` | `302 /pages/login.php` |
 | `/api/cart_get.php` | GET | session cookie | คืน current session cart และยอดรวม | JSON |
 | `/api/cart_add.php` | POST | barcode + CSRF token | ตรวจ product/stock แล้วเพิ่ม session cart | JSON |
 | `/api/cart_update.php` | POST | product ID, quantity + CSRF token | ตรวจ stock แล้วแก้ session cart | JSON |
@@ -151,9 +154,9 @@ UI ทั้งหมดอ้างอิง `assets/css/style.css`:
 | `/api/product_add.php` | POST | barcode, name, price, stock + CSRF token | เพิ่มสินค้า หรือเปิดขาย barcode ที่ถูกปิดไว้ | JSON |
 | `/api/product_update.php` | POST | product ID, barcode, name, price, stock + CSRF token | แก้ไขสินค้า active ที่มีอยู่ (409 ถ้า barcode ชนกับแถวอื่นแม้ปิดการขายอยู่) | JSON |
 | `/api/product_remove.php` | POST | product ID + CSRF token | ตั้ง `is_active = 0`; ไม่ลบแถวจริง | JSON |
-| `/receipt.php` | GET | `order_id` (+ `autoprint`) | อ่านบิลและรายการ ตรวจสิทธิ์เจ้าของบิล/admin แล้วผ่อน `X-Frame-Options` เป็น `SAMEORIGIN` ให้ `pos.php` ฝังได้ | HTML ใบเสร็จ (`SAMEORIGIN`) หรือหน้า error 400/404 (ยังเป็น `DENY`) |
-| `/report_sales.php` | GET | `date_from`, `date_to`, `user_id` | `require_role('admin')`, aggregate `orders` และ `SUM(order_items.qty)` | HTML รายงาน หรือหน้า error 403 |
-| `/order_history.php` | GET | ตัวกรองเดียวกัน + `q`, `page`, `order_id` | `require_role('admin')`, list บิลแบบแบ่งหน้า + รายละเอียดบิลที่เลือก | HTML ประวัติบิล หรือหน้า error 403 |
+| `/pages/receipt.php` | GET | `order_id` (+ `autoprint`) | อ่านบิลและรายการ ตรวจสิทธิ์เจ้าของบิล/admin แล้วผ่อน `X-Frame-Options` เป็น `SAMEORIGIN` ให้ `pos.php` ฝังได้ | HTML ใบเสร็จ (`SAMEORIGIN`) หรือหน้า error 400/404 (ยังเป็น `DENY`) |
+| `/pages/report_sales.php` | GET | `date_from`, `date_to`, `user_id` | `require_role('admin')`, aggregate `orders` และ `SUM(order_items.qty)` | HTML รายงาน หรือหน้า error 403 |
+| `/pages/order_history.php` | GET | ตัวกรองเดียวกัน + `q`, `page`, `order_id` | `require_role('admin')`, list บิลแบบแบ่งหน้า + รายละเอียดบิลที่เลือก | HTML ประวัติบิล หรือหน้า error 403 |
 
 ### Shared backend modules
 

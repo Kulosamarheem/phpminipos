@@ -20,7 +20,7 @@ New-Item -ItemType Directory -Force $htdocs | Out-Null
 # ไฟล์ PHP ของแอปที่หน้าราก + โฟลเดอร์ที่แอปใช้จริงเท่านั้น
 # (ไม่เอา tests/, sql/, เอกสาร, start.bat ฯลฯ ขึ้นเว็บ)
 Copy-Item (Join-Path $root '*.php') $htdocs
-foreach ($dir in 'api', 'assets', 'includes', 'config') {
+foreach ($dir in 'api', 'pages', 'assets', 'includes', 'config') {
     Copy-Item (Join-Path $root $dir) $htdocs -Recurse
 }
 

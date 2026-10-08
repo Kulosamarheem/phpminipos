@@ -139,7 +139,7 @@ function extract_attribute(string $html, string $pattern): ?string
 /** login แล้วคืน CSRF token ของ session (อ่านจาก meta ในหน้า pos.php) */
 function login(string $baseUrl, string $jar, string $username, string $password): string
 {
-    $loginPage = http_get($baseUrl . 'login.php', $jar);
+    $loginPage = http_get($baseUrl . 'pages/login.php', $jar);
     $loginToken = extract_attribute(
         $loginPage['body'],
         '/name="csrf_token"\s+value="([^"]+)"/'
@@ -150,7 +150,7 @@ function login(string $baseUrl, string $jar, string $username, string $password)
         exit(1);
     }
 
-    $result = http_post_form($baseUrl . 'login.php', $jar, [
+    $result = http_post_form($baseUrl . 'pages/login.php', $jar, [
         'csrf_token' => $loginToken,
         'username' => $username,
         'password' => $password,
@@ -161,7 +161,7 @@ function login(string $baseUrl, string $jar, string $username, string $password)
         exit(1);
     }
 
-    $posPage = http_get($baseUrl . 'pos.php', $jar);
+    $posPage = http_get($baseUrl . 'pages/pos.php', $jar);
     $cartToken = extract_attribute(
         $posPage['body'],
         '/name="cart-csrf-token"\s+content="([^"]+)"/'
@@ -319,7 +319,7 @@ info('รายการขายของสินค้านี้เพิ�
 info('');
 
 // php -S ไม่ส่ง header Server ออกมา ต่างจาก Apache/nginx จึงใช้เป็นตัวบอกว่ารันบน built-in server
-$server = server_software($baseUrl . 'login.php');
+$server = server_software($baseUrl . 'pages/login.php');
 if ($server === '' || str_contains($server, 'Development Server')) {
     info('หมายเหตุ: ดูเหมือนรันบน PHP built-in server ซึ่งรับ request ทีละรายการ');
     info('          ผลลัพธ์นี้ยืนยันว่าการตรวจสต็อกซ้ำก่อนตัดทำงานถูกต้อง');

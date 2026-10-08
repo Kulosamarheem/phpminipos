@@ -47,7 +47,7 @@ test.describe('pos.php — ยอดสุทธิที่คิดรวม�
                 stock: 100,
             });
 
-            await page.goto('/pos.php');
+            await page.goto('/pages/pos.php');
             await page.fill('#barcode', barcode);
             await page.click('#add-product-form button[type="submit"]');
 
@@ -81,7 +81,7 @@ test.describe('pos.php — ยอดสุทธิที่คิดรวม�
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบเงินทอน', price: '120.00', stock: 50 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await page.fill('#barcode', barcode);
         await page.click('#add-product-form button[type="submit"]');
         await expect(page.locator('#cart-item-count')).toHaveText('1 ชิ้น');
@@ -111,7 +111,7 @@ test.describe('pos.php — ยอดสุทธิที่คิดรวม�
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบส่วนลดเกิน', price: '50.00', stock: 10 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await page.fill('#barcode', barcode);
         await page.click('#add-product-form button[type="submit"]');
         await expect(page.locator('#cart-item-count')).toHaveText('1 ชิ้น');
@@ -131,7 +131,7 @@ test.describe('pos.php — ยอดสุทธิที่คิดรวม�
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบปิดบิล', price: '120.00', stock: 50 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await page.fill('#barcode', barcode);
         await page.click('#add-product-form button[type="submit"]');
         await expect(page.locator('#cart-item-count')).toHaveText('1 ชิ้น');

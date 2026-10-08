@@ -49,7 +49,7 @@ function render_error_page(
     ?string $backUrl = null,
     string $backLabel = 'กลับหน้าหลัก'
 ): never {
-    $backUrl ??= BASE_URL . 'index.php';
+    $backUrl ??= BASE_URL . 'pages/index.php';
 
     if (!headers_sent()) {
         http_response_code($status);

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/auth.php';
-require_once __DIR__ . '/includes/money.php';
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/money.php';
+require_once __DIR__ . '/../config/db.php';
 
 require_login();
 $user = current_user();
 
 $orderId = filter_var($_GET['order_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($orderId === false || $orderId === null) {
-    render_error_page('รหัสบิลไม่ถูกต้อง', 400, 'เปิดใบเสร็จไม่ได้', BASE_URL . 'pos.php', 'กลับหน้าขาย');
+    render_error_page('รหัสบิลไม่ถูกต้อง', 400, 'เปิดใบเสร็จไม่ได้', BASE_URL . 'pages/pos.php', 'กลับหน้าขาย');
 }
 
 $stmt = $pdo->prepare(
@@ -30,7 +30,7 @@ $isAdmin = ($user['role'] ?? '') === 'admin';
 $isOwner = $order !== false && (int) ($order['user_id'] ?? 0) === (int) ($user['id'] ?? 0);
 
 if ($order === false || (!$isAdmin && !$isOwner)) {
-    render_error_page('ไม่พบใบเสร็จของบิลนี้', 404, 'ไม่พบใบเสร็จ', BASE_URL . 'pos.php', 'กลับหน้าขาย');
+    render_error_page('ไม่พบใบเสร็จของบิลนี้', 404, 'ไม่พบใบเสร็จ', BASE_URL . 'pages/pos.php', 'กลับหน้าขาย');
 }
 
 $items = $pdo->prepare(
@@ -62,8 +62,8 @@ $esc = static fn ($value): string => htmlspecialchars((string) $value, ENT_QUOTE
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ใบเสร็จ <?= $esc($order['order_number']) ?> - Mini POS</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/print.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/print.css">
 </head>
 <body class="receipt-page">
     <div class="receipt-toolbar">

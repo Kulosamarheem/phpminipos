@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/report.php';
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/../includes/report.php';
+require_once __DIR__ . '/../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     render_error_page('หน้ารายงานรองรับเฉพาะการเปิดดูเท่านั้น', 405, 'ไม่รองรับคำขอนี้');
@@ -56,7 +56,7 @@ $vatPercent = money_vat_percent();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>รายงานยอดขาย - Mini POS</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <?php report_render_topbar($user); ?>

@@ -85,7 +85,7 @@
 
     async function loadProducts() {
         try {
-            const payload = await request('api/product_get.php');
+            const payload = await request('../api/product_get.php');
             products = payload.products;
             renderProducts();
         } catch (error) {
@@ -103,7 +103,7 @@
 
         button.disabled = true;
         try {
-            const payload = await request('api/product_update.php', data);
+            const payload = await request('../api/product_update.php', data);
             editingId = null;
             showMessage(payload.message, 'success');
             await loadProducts();
@@ -122,7 +122,7 @@
 
         button.disabled = true;
         try {
-            const payload = await request('api/product_remove.php', { product_id: productId });
+            const payload = await request('../api/product_remove.php', { product_id: productId });
             editingId = null;
             showMessage(payload.message, 'success');
             await loadProducts();
@@ -138,7 +138,7 @@
         const data = Object.fromEntries(new FormData(form));
 
         try {
-            const payload = await request('api/product_add.php', data);
+            const payload = await request('../api/product_add.php', data);
             form.reset();
             showMessage(payload.message, 'success');
             await loadProducts();

@@ -57,7 +57,7 @@ test('สาธิต: แก้ไขสินค้า แล้วขาย�
     });
 
     await test.step('ไปหน้าขาย สแกนสินค้า 2 ชิ้น', async () => {
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await page.waitForTimeout(600);
 
         await page.fill('#barcode', barcode);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/../includes/auth.php';
 require_login();
 
 $user = current_user();
@@ -15,8 +15,8 @@ $csrfToken = csrf_token();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
     <title>จัดการสินค้า - Mini POS</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/js/products.js" defer></script>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/products.js" defer></script>
 </head>
 <body>
     <header class="topbar">

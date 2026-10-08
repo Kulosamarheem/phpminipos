@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/auth.php';
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/db.php';
 
 if (is_logged_in()) {
-    header('Location: ' . BASE_URL . 'index.php');
+    header('Location: ' . BASE_URL . 'pages/index.php');
     exit;
 }
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'full_name' => $user['full_name'],
                 'role'      => $user['role'],
             ];
-            header('Location: ' . BASE_URL . 'index.php');
+            header('Location: ' . BASE_URL . 'pages/index.php');
             exit;
         }
 
@@ -78,7 +78,7 @@ $csrfToken = csrf_token();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>เข้าสู่ระบบ - Mini POS</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body class="auth-page">
     <form class="auth-box" method="post" action="login.php">

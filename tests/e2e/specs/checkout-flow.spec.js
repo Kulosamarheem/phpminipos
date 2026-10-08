@@ -28,7 +28,7 @@ test.describe('pos.php — ขายครบขั้นตอนแล้ว�
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบขั้นตอนขาย', price: '100.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
 
         // 1) เพิ่มสินค้า
         await page.fill('#barcode', barcode);
@@ -84,7 +84,7 @@ test.describe('pos.php — ขายครบขั้นตอนแล้ว�
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบโฟกัส', price: '50.00', stock: 10 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await expect(page.locator('#barcode')).toBeFocused();
 
         // จำลองว่าโฟกัสหลุดไปแล้ว (เช่น แคชเชียร์คลิกที่อื่นก่อนสลับแท็บ/แอป)

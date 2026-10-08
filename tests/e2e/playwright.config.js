@@ -31,7 +31,7 @@ module.exports = defineConfig({
     webServer: {
         // ใช้พอร์ตแยกจาก start.bat (8000) เพื่อไม่ให้ชนกับเซิร์ฟเวอร์ที่เปิดค้างไว้
         command: `"${phpBin}" -S ${HOST}:${PORT} -t "../.."`,
-        url: `${baseURL}/login.php`,
+        url: `${baseURL}/pages/login.php`,
         reuseExistingServer: true,
         timeout: 30_000,
         stdout: 'ignore',

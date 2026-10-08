@@ -69,7 +69,7 @@ test.describe('pos.php — พักบิล', () => {
         await createProduct(page, { barcode: barcodeA, name: 'สินค้าลูกค้าคนแรก', price: '100.00', stock: 20 });
         await createProduct(page, { barcode: barcodeB, name: 'สินค้าลูกค้าคนที่สอง', price: '50.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
 
         // ลูกค้าคนแรกซื้อ A แล้วนึกได้ว่าลืมหยิบของ
         await addToCart(page, barcodeA);
@@ -121,7 +121,7 @@ test.describe('pos.php — พักบิล', () => {
 
     test('พักบิลตอนตะกร้าว่าง ต้องเตือนและไม่สร้างบิลพัก', async ({ page }) => {
         await login(page);
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
 
         await parkBill(page);
 
@@ -139,7 +139,7 @@ test.describe('pos.php — พักบิล', () => {
         await createProduct(page, { barcode: barcodeA, name: 'สินค้าบิลที่พักไว้', price: '100.00', stock: 20 });
         await createProduct(page, { barcode: barcodeB, name: 'สินค้าบิลปัจจุบัน', price: '70.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcodeA);
         await parkBill(page, 'บิลที่พักไว้');
         await expect(heldCount(page)).toHaveText('1 บิล');
@@ -169,7 +169,7 @@ test.describe('pos.php — พักบิล', () => {
         await createProduct(page, { barcode: barcodeA, name: 'สินค้าที่พักไว้', price: '100.00', stock: 20 });
         await createProduct(page, { barcode: barcodeB, name: 'สินค้าในตะกร้า', price: '70.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcodeA);
         await parkBill(page, 'ห้ามหาย');
         await addToCart(page, barcodeB);
@@ -193,14 +193,14 @@ test.describe('pos.php — พักบิล', () => {
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าที่จะถูกปิดการขาย', price: '100.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcode);
         await parkBill(page, 'จะโดนตัด');
         await expect(heldCount(page)).toHaveText('1 บิล');
 
         await deactivateProduct(page, barcode);
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await heldRows(page).first().getByRole('button', { name: 'เรียกคืน' }).click();
 
         await expect(page.locator('#held-bill-message')).toContainText('สินค้าทั้งหมดถูกปิดการขายหรือสต็อกหมด');
@@ -216,19 +216,19 @@ test.describe('pos.php — พักบิล', () => {
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าราคาเปลี่ยน', price: '100.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcode);
         await parkBill(page, 'ทดสอบราคา');
         await expect(heldRows(page).first()).toContainText('100.00');
 
         // ขึ้นราคาระหว่างที่บิลยังพักอยู่
-        await page.goto('/products.php');
+        await page.goto('/pages/products.php');
         await productRow(page, barcode).getByRole('button', { name: 'แก้ไข' }).click();
         await editingRow(page).locator('input[name="price"]').fill('120.00');
         await editingRow(page).getByRole('button', { name: 'บันทึก' }).click();
         await expect(page.locator('#product-message')).toHaveText('บันทึกการแก้ไขแล้ว');
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await heldRows(page).first().getByRole('button', { name: 'เรียกคืน' }).click();
 
         await expect(page.locator('#held-bill-message')).toContainText('ราคาสินค้าเปลี่ยนแปลง 1 รายการ');
@@ -245,7 +245,7 @@ test.describe('pos.php — พักบิล', () => {
         await createProduct(page, { barcode: barcodeA, name: 'สินค้าบิลที่จะลบ', price: '100.00', stock: 20 });
         await createProduct(page, { barcode: barcodeB, name: 'สินค้าที่ต้องอยู่ต่อ', price: '30.00', stock: 20 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcodeA);
         await parkBill(page, 'จะลบทิ้ง');
         await addToCart(page, barcodeB);
@@ -268,7 +268,7 @@ test.describe('pos.php — พักบิล', () => {
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบ escape', price: '10.00', stock: 5 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcode);
         await parkBill(page, payload);
 
@@ -285,7 +285,7 @@ test.describe('pos.php — พักบิล', () => {
         await login(page);
         await createProduct(page, { barcode, name: 'สินค้าทดสอบโฟกัสพักบิล', price: '10.00', stock: 5 });
 
-        await page.goto('/pos.php');
+        await page.goto('/pages/pos.php');
         await addToCart(page, barcode);
 
         // พิมพ์หมายเหตุแล้วต้องยังอยู่ในช่องเดิม ไม่โดนดึงกลับไปที่ #barcode

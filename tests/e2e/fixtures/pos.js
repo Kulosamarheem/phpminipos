@@ -14,7 +14,7 @@ const baht = (cents) => `${money.format(cents / 100)} บาท`;
 const uniqueBarcode = (tag) => `E2E-${tag}-${Date.now()}`;
 
 async function login(page) {
-    await page.goto('/login.php');
+    await page.goto('/pages/login.php');
     await page.fill('input[name="username"]', USER);
     await page.fill('input[name="password"]', PASS);
     await page.click('button[type="submit"]');
@@ -40,7 +40,7 @@ async function stubPrint(page) {
 const printCalls = (page) => page.evaluate(() => window.__posPrintCalls || 0);
 
 async function createProduct(page, { barcode, name, price, stock }) {
-    await page.goto('/products.php');
+    await page.goto('/pages/products.php');
     await page.fill('#product-form input[name="barcode"]', barcode);
     await page.fill('#product-form input[name="name"]', name);
     await page.fill('#product-form input[name="price"]', price);
@@ -68,7 +68,7 @@ function editingRow(page) {
  * order_items.product_id และ stock_movements.product_id เป็น FK แบบ RESTRICT
  */
 async function deactivateProduct(page, barcode) {
-    await page.goto('/products.php');
+    await page.goto('/pages/products.php');
 
     const row = productRow(page, barcode);
     if (await row.count()) {
