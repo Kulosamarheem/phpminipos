@@ -7,7 +7,7 @@
 
 ## 🔗 Live demo
 
-**https://YOUR-SUBDOMAIN.infinityfreeapp.com** <!-- TODO: ใส่ลิงก์หลัง deploy -->
+**https://phpminipos.infinityfreeapp.com**
 
 | บัญชี | รหัสผ่าน | สิทธิ์ |
 |---|---|---|
