@@ -209,7 +209,7 @@ foreach (['a', 'b'] as $name) {
     $jar = cookie_jar($name);
     $token = login($baseUrl, $jar, $username, $password);
 
-    $added = http_post_json($baseUrl . 'cart_add.php', $jar, [
+    $added = http_post_json($baseUrl . 'api/cart_add.php', $jar, [
         'barcode' => TEST_BARCODE,
         'csrf_token' => $token,
     ]);
@@ -231,7 +231,7 @@ $multi = curl_multi_init();
 $handles = [];
 
 foreach ($sessions as $name => $session) {
-    $ch = curl_handle($baseUrl . 'checkout.php', $session['jar']);
+    $ch = curl_handle($baseUrl . 'api/checkout.php', $session['jar']);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
         'csrf_token' => $session['token'],

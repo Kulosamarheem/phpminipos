@@ -160,7 +160,7 @@
 
     async function refreshTotals() {
         try {
-            const payload = await request('cart_totals.php', {
+            const payload = await request('api/cart_totals.php', {
                 discount_amount: discountInput.value.trim() || '0',
                 vat_mode: vatMode.value,
             });
@@ -207,7 +207,7 @@
 
     async function loadCart() {
         try {
-            const payload = await request('cart_get.php');
+            const payload = await request('api/cart_get.php');
             renderCart(payload.cart);
         } catch (error) {
             showMessage(error.message, 'error');
@@ -254,7 +254,7 @@
 
     async function loadHeldBills() {
         try {
-            const payload = await request('held_bill_list.php');
+            const payload = await request('api/held_bill_list.php');
             renderHeldBills(payload.held_bills);
         } catch (error) {
             showHoldMessage(error.message, 'error');
@@ -271,7 +271,7 @@
         }
 
         try {
-            const payload = await request('cart_add.php', { barcode });
+            const payload = await request('api/cart_add.php', { barcode });
             renderCart(payload.cart);
             showMessage(payload.message, 'success');
             form.reset();
@@ -294,8 +294,8 @@
 
         try {
             const payload = action === 'remove'
-                ? await request('cart_remove.php', { product_id: productId })
-                : await request('cart_update.php', { product_id: productId, qty: Number(button.dataset.qty) });
+                ? await request('api/cart_remove.php', { product_id: productId })
+                : await request('api/cart_update.php', { product_id: productId, qty: Number(button.dataset.qty) });
             renderCart(payload.cart);
             showMessage(payload.message, 'success');
         } catch (error) {
@@ -312,7 +312,7 @@
 
         clearCartButton.disabled = true;
         try {
-            const payload = await request('cart_clear.php', {});
+            const payload = await request('api/cart_clear.php', {});
             renderCart(payload.cart);
             showMessage(payload.message, 'success');
             barcodeInput.focus();
@@ -328,7 +328,7 @@
         holdButton.disabled = true;
 
         try {
-            const payload = await request('held_bill_park.php', { note: holdNoteInput.value.trim() });
+            const payload = await request('api/held_bill_park.php', { note: holdNoteInput.value.trim() });
             renderCart(payload.cart);
             renderHeldBills(payload.held_bills);
             holdForm.reset();
@@ -360,10 +360,10 @@
         try {
             let payload;
             if (action === 'discard') {
-                payload = await request('held_bill_delete.php', { held_bill_id: heldBillId });
+                payload = await request('api/held_bill_delete.php', { held_bill_id: heldBillId });
             } else {
                 try {
-                    payload = await request('held_bill_resume.php', {
+                    payload = await request('api/held_bill_resume.php', {
                         held_bill_id: heldBillId,
                         on_conflict: 'reject',
                     });
@@ -377,7 +377,7 @@
                         showHoldMessage(error.message, 'error');
                         return;
                     }
-                    payload = await request('held_bill_resume.php', {
+                    payload = await request('api/held_bill_resume.php', {
                         held_bill_id: heldBillId,
                         on_conflict: 'park',
                     });
@@ -530,7 +530,7 @@
         checkoutButton.disabled = true;
         try {
             const data = Object.fromEntries(new FormData(checkoutForm));
-            const payload = await request('checkout.php', data);
+            const payload = await request('api/checkout.php', data);
             // ล้างฟอร์มก่อน renderCart เพื่อให้ยอดที่คำนวณใหม่ใช้ส่วนลด 0.00 ของบิลถัดไป
             checkoutForm.reset();
             updatePaymentFields();

@@ -81,5 +81,5 @@ powershell -ExecutionPolicy Bypass -File build_deploy.ps1
 
 ## เอกสารออกแบบ
 
-- [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) — ออกแบบฐานข้อมูล, flow การขาย, การคำนวณภาษี
-- [PROJECT_MAP.md](PROJECT_MAP.md) — แผนผังไฟล์ในโปรเจกต์
+- [SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md) — ออกแบบฐานข้อมูล, flow การขาย, การคำนวณภาษี
+- [PROJECT_MAP.md](docs/PROJECT_MAP.md) — แผนผังไฟล์ในโปรเจกต์

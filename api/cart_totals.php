@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/includes/cart.php';
+require_once __DIR__ . '/../includes/cart.php';
 
 // ---------------------------------------------------------
 // คำนวณยอดสรุปของตะกร้าปัจจุบัน (ยอดรวม / ส่วนลด / VAT / ยอดสุทธิ)

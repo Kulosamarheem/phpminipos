@@ -51,33 +51,39 @@ Project PHP/
 │       ├── fixtures/          # ข้อมูลตั้งต้นของเทสต์
 │       ├── specs/             # เทสต์เคส: แก้ไขสินค้า (products.php), ยอดสุทธิรวม VAT + ขั้นตอนขาย + พักบิล (pos.php)
 │       └── README.md          # วิธีติดตั้ง/รัน/ตั้งค่า environment variable
+├── api/                       # JSON endpoint ที่ pos.js / products.js เรียกผ่าน fetch
+│   ├── cart_add.php           # เพิ่มสินค้าจาก barcode
+│   ├── cart_update.php        # แก้จำนวนสินค้า
+│   ├── cart_remove.php        # ลบสินค้า
+│   ├── cart_clear.php         # ล้างตะกร้าทั้งหมด
+│   ├── cart_get.php           # อ่านตะกร้าปัจจุบัน
+│   ├── cart_totals.php        # คำนวณยอดรวม/ส่วนลด/VAT/สุทธิของตะกร้าปัจจุบันแบบสด ไม่แตะ DB
+│   ├── held_bill_park.php     # พักตะกร้าปัจจุบันเป็นบิลพัก (transaction)
+│   ├── held_bill_list.php     # อ่านรายการบิลที่พักไว้
+│   ├── held_bill_resume.php   # เรียกคืนบิลพักกลับเป็นตะกร้าปัจจุบัน (transaction)
+│   ├── held_bill_delete.php   # ลบบิลที่พักไว้ทิ้ง
+│   ├── checkout.php           # บันทึกการชำระเงินและตัดสต็อก (transaction, รองรับ vat_mode)
+│   ├── product_get.php        # อ่านสินค้า active
+│   ├── product_add.php        # เพิ่มหรือเปิดขายสินค้าเดิม
+│   ├── product_update.php     # แก้ไขสินค้าที่มีอยู่
+│   └── product_remove.php     # ปิดการขายสินค้า
+├── docs/
+│   ├── SYSTEM_DESIGN.md       # การออกแบบและ roadmap ของระบบ POS
+│   ├── PROJECT_MAP.md         # ไฟล์นี้
+│   ├── Flow.txt               # flow POS ที่เสนอไว้
+│   ├── Database.txt           # flow transaction ที่เสนอไว้
+│   └── screenshots/           # ภาพหน้าจอที่ใช้ใน README
 ├── index.php                  # หน้าแรกหลังเข้าสู่ระบบ
 ├── login.php                  # หน้าจอและ handler การเข้าสู่ระบบ (CSRF + throttle)
 ├── logout.php                 # handler ออกจากระบบ
 ├── pos.php                    # หน้าขายสินค้าและตะกร้า
-├── cart_add.php               # เพิ่มสินค้าจาก barcode (JSON)
-├── cart_update.php            # แก้จำนวนสินค้า (JSON)
-├── cart_remove.php            # ลบสินค้า (JSON)
-├── cart_clear.php             # ล้างตะกร้าทั้งหมด (JSON)
-├── cart_get.php                # อ่านตะกร้าปัจจุบัน (JSON)
-├── cart_totals.php            # คำนวณยอดรวม/ส่วนลด/VAT/สุทธิของตะกร้าปัจจุบันแบบสด ไม่แตะ DB (JSON)
-├── held_bill_park.php         # พักตะกร้าปัจจุบันเป็นบิลพัก (JSON/transaction)
-├── held_bill_list.php         # อ่านรายการบิลที่พักไว้ (JSON)
-├── held_bill_resume.php       # เรียกคืนบิลพักกลับเป็นตะกร้าปัจจุบัน (JSON/transaction)
-├── held_bill_delete.php       # ลบบิลที่พักไว้ทิ้ง (JSON)
-├── checkout.php               # บันทึกการชำระเงินและตัดสต็อก (JSON/transaction, รองรับ vat_mode)
 ├── receipt.php                # ใบเสร็จ 80mm ของบิลที่ระบุ
 ├── report_sales.php           # รายงานสรุปยอดขาย — admin เท่านั้น
 ├── order_history.php          # ประวัติบิล + รายละเอียดรายการ — admin เท่านั้น
 ├── products.php               # หน้าเพิ่ม/แก้ไข/ปิดการขายสินค้า
-├── product_get.php            # อ่านสินค้า active (JSON)
-├── product_add.php            # เพิ่มหรือเปิดขายสินค้าเดิม (JSON)
-├── product_update.php         # แก้ไขสินค้าที่มีอยู่ (JSON)
-├── product_remove.php         # ปิดการขายสินค้า (JSON)
 ├── start.bat                  # ตัวช่วยเปิด MySQL + PHP dev server
-├── SYSTEM_DESIGN.md           # การออกแบบและ roadmap ของระบบ POS
-├── Flow.txt                   # flow POS ที่เสนอไว้
-├── Database.txt               # flow transaction ที่เสนอไว้
+├── build_deploy.ps1           # เตรียมไฟล์อัปขึ้น shared hosting (เช่น InfinityFree)
+├── README.md
 └── graphify-out/              # knowledge graph ของโปรเจกต์ (สร้างโดย graphify) — GRAPH_REPORT.md, graph.json, graph.html
 ```
 
@@ -88,8 +94,9 @@ Project PHP/
 | `includes/` | reusable cross-cutting logic โดยเฉพาะ session/authentication |
 | `sql/` | โครงสร้างฐานข้อมูลสำหรับ setup MySQL/MariaDB |
 | `tests/` | สคริปต์ CLI ทดสอบแบบรันมือ (VAT, concurrency, e2e user fixtures) + `tests/e2e/` ชุด Playwright แยก dependency |
-| root `*.php` | frontend routes และ backend handlers รวมอยู่ในไฟล์เดียว — ไม่มี router กลาง ห้ามย้ายไฟล์เหล่านี้เข้าโฟลเดอร์ย่อยเพราะ URL ผูกกับพาธไฟล์โดยตรง |
-| `SYSTEM_DESIGN.md`, `Flow.txt`, `Database.txt` | เอกสารออกแบบ ไม่ใช่ executable code |
+| root `*.php` | หน้าเว็บ (route) ที่ผู้ใช้เปิดตรง — ไม่มี router กลาง URL ผูกกับพาธไฟล์โดยตรง ห้ามย้ายโดยไม่แก้ลิงก์ทุกจุด |
+| `api/` | JSON endpoint ที่ JavaScript เรียก — ย้าย/เปลี่ยนชื่อต้องแก้ `request('api/...')` ใน `assets/js/` ด้วย |
+| `docs/` | เอกสารออกแบบ (`SYSTEM_DESIGN.md`, `Flow.txt`, `Database.txt`) และภาพหน้าจอ ไม่ใช่ executable code |
 | `graphify-out/` | knowledge graph ที่สร้างขึ้น (generated) — cache ภายในและพาธ interpreter เฉพาะเครื่องถูก gitignore ไว้ |
 
 ## Frontend routes และ UI ที่มีจริง
@@ -129,21 +136,21 @@ UI ทั้งหมดอ้างอิง `assets/css/style.css`:
 | `/login.php` | POST | `username`, `password`, CSRF token | ตรวจ throttle, CSRF, prepared `SELECT` ผู้ใช้ active, `password_verify`, regenerate session | `302 /index.php` หรือ HTML พร้อม error |
 | `/index.php` | GET | session cookie | `require_login()` และอ่าน `current_user()` | HTML หรือ `302 /login.php` |
 | `/logout.php` | GET | session cookie | ล้าง `$_SESSION`, `session_destroy()` | `302 /login.php` |
-| `/cart_get.php` | GET | session cookie | คืน current session cart และยอดรวม | JSON |
-| `/cart_add.php` | POST | barcode + CSRF token | ตรวจ product/stock แล้วเพิ่ม session cart | JSON |
-| `/cart_update.php` | POST | product ID, quantity + CSRF token | ตรวจ stock แล้วแก้ session cart | JSON |
-| `/cart_remove.php` | POST | product ID + CSRF token | ลบจาก session cart | JSON |
-| `/cart_clear.php` | POST | CSRF token | ล้างตะกร้าทั้งหมดในครั้งเดียว | JSON |
-| `/cart_totals.php` | POST | discount, `vat_mode` + CSRF token | คำนวณยอดรวม/ส่วนลด/VAT/สุทธิของตะกร้าปัจจุบันด้วย `money_order_totals()` ตัวเดียวกับ checkout — ไม่แตะ DB และไม่แก้ cart | JSON |
-| `/held_bill_park.php` | POST | `note` (ไม่บังคับ) + CSRF token | snapshot ตะกร้าลง `held_bills`/`held_bill_items` แล้วล้างตะกร้า; 422 ถ้าตะกร้าว่างหรือพักครบ `HELD_BILL_MAX` | JSON |
-| `/held_bill_list.php` | GET | session cookie | คืนบิลที่พักไว้ทั้งหมดพร้อมยอดรวมและ flag `is_stale` | JSON |
-| `/held_bill_resume.php` | POST | `held_bill_id`, `on_conflict` (`reject`/`park`) + CSRF token | ยึดบิลด้วย `FOR UPDATE` + `DELETE`, ตรวจสินค้าและใช้ราคาปัจจุบัน แล้วเขียนกลับเป็นตะกร้า; 409 `cart_not_empty` เมื่อตะกร้ายังมีของและ `on_conflict = reject` | JSON |
-| `/held_bill_delete.php` | POST | `held_bill_id` + CSRF token | ลบบิลพักทิ้ง (รายการ cascade); 404 ถ้าถูกเรียกคืน/ลบไปแล้ว | JSON |
-| `/checkout.php` | POST | discount, `vat_mode` (`inclusive`/`exclusive`), payment, received amount + CSRF token | lock stock, คำนวณ VAT ตาม `vat_mode`, สร้างบิล/รายการ/stock movement และ commit พร้อมกัน | JSON |
-| `/product_get.php` | GET | session cookie | คืนรายการสินค้า active | JSON |
-| `/product_add.php` | POST | barcode, name, price, stock + CSRF token | เพิ่มสินค้า หรือเปิดขาย barcode ที่ถูกปิดไว้ | JSON |
-| `/product_update.php` | POST | product ID, barcode, name, price, stock + CSRF token | แก้ไขสินค้า active ที่มีอยู่ (409 ถ้า barcode ชนกับแถวอื่นแม้ปิดการขายอยู่) | JSON |
-| `/product_remove.php` | POST | product ID + CSRF token | ตั้ง `is_active = 0`; ไม่ลบแถวจริง | JSON |
+| `/api/cart_get.php` | GET | session cookie | คืน current session cart และยอดรวม | JSON |
+| `/api/cart_add.php` | POST | barcode + CSRF token | ตรวจ product/stock แล้วเพิ่ม session cart | JSON |
+| `/api/cart_update.php` | POST | product ID, quantity + CSRF token | ตรวจ stock แล้วแก้ session cart | JSON |
+| `/api/cart_remove.php` | POST | product ID + CSRF token | ลบจาก session cart | JSON |
+| `/api/cart_clear.php` | POST | CSRF token | ล้างตะกร้าทั้งหมดในครั้งเดียว | JSON |
+| `/api/cart_totals.php` | POST | discount, `vat_mode` + CSRF token | คำนวณยอดรวม/ส่วนลด/VAT/สุทธิของตะกร้าปัจจุบันด้วย `money_order_totals()` ตัวเดียวกับ checkout — ไม่แตะ DB และไม่แก้ cart | JSON |
+| `/api/held_bill_park.php` | POST | `note` (ไม่บังคับ) + CSRF token | snapshot ตะกร้าลง `held_bills`/`held_bill_items` แล้วล้างตะกร้า; 422 ถ้าตะกร้าว่างหรือพักครบ `HELD_BILL_MAX` | JSON |
+| `/api/held_bill_list.php` | GET | session cookie | คืนบิลที่พักไว้ทั้งหมดพร้อมยอดรวมและ flag `is_stale` | JSON |
+| `/api/held_bill_resume.php` | POST | `held_bill_id`, `on_conflict` (`reject`/`park`) + CSRF token | ยึดบิลด้วย `FOR UPDATE` + `DELETE`, ตรวจสินค้าและใช้ราคาปัจจุบัน แล้วเขียนกลับเป็นตะกร้า; 409 `cart_not_empty` เมื่อตะกร้ายังมีของและ `on_conflict = reject` | JSON |
+| `/api/held_bill_delete.php` | POST | `held_bill_id` + CSRF token | ลบบิลพักทิ้ง (รายการ cascade); 404 ถ้าถูกเรียกคืน/ลบไปแล้ว | JSON |
+| `/api/checkout.php` | POST | discount, `vat_mode` (`inclusive`/`exclusive`), payment, received amount + CSRF token | lock stock, คำนวณ VAT ตาม `vat_mode`, สร้างบิล/รายการ/stock movement และ commit พร้อมกัน | JSON |
+| `/api/product_get.php` | GET | session cookie | คืนรายการสินค้า active | JSON |
+| `/api/product_add.php` | POST | barcode, name, price, stock + CSRF token | เพิ่มสินค้า หรือเปิดขาย barcode ที่ถูกปิดไว้ | JSON |
+| `/api/product_update.php` | POST | product ID, barcode, name, price, stock + CSRF token | แก้ไขสินค้า active ที่มีอยู่ (409 ถ้า barcode ชนกับแถวอื่นแม้ปิดการขายอยู่) | JSON |
+| `/api/product_remove.php` | POST | product ID + CSRF token | ตั้ง `is_active = 0`; ไม่ลบแถวจริง | JSON |
 | `/receipt.php` | GET | `order_id` (+ `autoprint`) | อ่านบิลและรายการ ตรวจสิทธิ์เจ้าของบิล/admin แล้วผ่อน `X-Frame-Options` เป็น `SAMEORIGIN` ให้ `pos.php` ฝังได้ | HTML ใบเสร็จ (`SAMEORIGIN`) หรือหน้า error 400/404 (ยังเป็น `DENY`) |
 | `/report_sales.php` | GET | `date_from`, `date_to`, `user_id` | `require_role('admin')`, aggregate `orders` และ `SUM(order_items.qty)` | HTML รายงาน หรือหน้า error 403 |
 | `/order_history.php` | GET | ตัวกรองเดียวกัน + `q`, `page`, `order_id` | `require_role('admin')`, list บิลแบบแบ่งหน้า + รายละเอียดบิลที่เลือก | HTML ประวัติบิล หรือหน้า error 403 |

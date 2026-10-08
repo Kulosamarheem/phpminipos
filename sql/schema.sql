@@ -1,5 +1,5 @@
 -- Mini POS & Billing System — Database Schema
--- อ้างอิงตาม SYSTEM_DESIGN.md (หัวข้อ 2)
+-- อ้างอิงตาม docs/SYSTEM_DESIGN.md (หัวข้อ 2)
 -- ใช้กับ MySQL / MariaDB (InnoDB)
 
 CREATE DATABASE IF NOT EXISTS pos_system
