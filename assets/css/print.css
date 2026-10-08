@@ -1,0 +1,144 @@
+/* print.css — ใบเสร็จขนาด 80mm (@media print)
+   เปลี่ยน width เป็น 58mm ได้ถ้าใช้เครื่องพิมพ์สลิปเล็ก */
+
+/* ---------- แสดงบนหน้าจอปกติ ---------- */
+.receipt-page {
+    padding: 24px 12px;
+}
+
+.receipt-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 0 auto 16px;
+    max-width: 80mm;
+}
+
+.receipt-toolbar button {
+    background: #2563eb;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font: inherit;
+    padding: 10px 16px;
+}
+
+.receipt-toolbar a {
+    color: #2563eb;
+    padding: 10px 8px;
+    text-decoration: none;
+}
+
+#receipt-section {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    color: #000;
+    font-family: 'TH Sarabun New', 'Segoe UI', monospace;
+    font-size: 13px;
+    line-height: 1.35;
+    margin: 0 auto;
+    padding: 6mm 4mm;
+    width: 80mm;
+}
+
+.receipt-header {
+    text-align: center;
+}
+
+.receipt-header h1 {
+    font-size: 17px;
+    margin: 0 0 4px;
+}
+
+.receipt-header p {
+    font-size: 12px;
+    margin: 1px 0;
+}
+
+.receipt-meta,
+.receipt-items,
+.receipt-totals {
+    border-top: 1px dashed #000;
+    margin-top: 6px;
+    padding-top: 6px;
+}
+
+.receipt-meta div,
+.receipt-totals .rt-row {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.receipt-meta div {
+    margin: 2px 0;
+}
+
+.receipt-items {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.receipt-items td {
+    padding: 0;
+    vertical-align: top;
+}
+
+.receipt-items .ri-name td {
+    font-weight: 600;
+    padding-top: 4px;
+}
+
+.receipt-items .ri-detail .ri-sub {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.receipt-totals .rt-row {
+    margin: 2px 0;
+}
+
+.receipt-totals .rt-net {
+    border-top: 1px solid #000;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.receipt-footer {
+    border-top: 1px dashed #000;
+    font-size: 12px;
+    margin-top: 8px;
+    padding-top: 6px;
+    text-align: center;
+}
+
+/* ---------- เฉพาะตอนสั่งพิมพ์ ---------- */
+@media print {
+    .receipt-toolbar {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+        margin: 0 !important;
+    }
+
+    .receipt-page {
+        padding: 0 !important;
+    }
+
+    #receipt-section {
+        box-shadow: none;
+        margin: 0;
+        padding: 2mm;
+        width: 80mm;
+    }
+
+    @page {
+        margin: 0;
+    }
+}

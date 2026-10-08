@@ -1,0 +1,15 @@
+{
+  "name": "mini-pos-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "description": "End-to-end test สำหรับ Mini POS (แก้ไขสินค้า + ยอดสุทธิรวมภาษี) พร้อมบันทึกวิดีโอ",
+  "scripts": {
+    "test": "playwright test --project=chromium",
+    "test:headed": "playwright test --project=chromium --headed",
+    "demo": "playwright test --project=demo",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

@@ -1,0 +1,21 @@
+config/env.production.php
+config/env.local.php
+tests/e2e/node_modules/
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+tests/e2e/package-lock.json
+tests/e2e/demo-video.webm
+
+# Playwright output leaks here if `npm test` is run from repo root instead of tests/e2e/
+/test-results/
+
+# graphify local build cache and machine-specific interpreter/root pointers
+graphify-out/cache/
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+
+# build_deploy.ps1 output (contains files for upload to hosting)
+/deploy/
+
+# Claude Code personal settings
+.claude/settings.local.json
